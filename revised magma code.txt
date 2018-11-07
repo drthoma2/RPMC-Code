@@ -1,0 +1,82 @@
+maxheight:=2;
+P<x> := PolynomialRing(Integers());
+f := P! x^2+1;
+A<i> := NumberField(f);
+Q<y> := PolynomialRing(A);
+qq := 0;
+Count := 0;
+Done := 0; 
+TotalNumber := AssociativeArray();
+CoolNumber := AssociativeArray();
+ECNumber := AssociativeArray();
+BaseChange := AssociativeArray(); 
+for height in [1 .. maxheight] do
+	TotalNumber[height] := 0;
+	CoolNumber[height] := 0;
+	ECNumber[height]:= 0; 
+	BaseChange[height] := 0; 
+end for; 
+	for a1 in [-maxheight .. maxheight] do
+    		for a2 in [1 .. maxheight] do
+			if Gcd(a1,a2) eq 1 then
+				for a3 in [-maxheight .. maxheight] do
+					for a4 in [1 .. maxheight] do
+						if Gcd(a3,a4) eq 1 then
+							Count:= Count +1; 
+						end if; 
+					end for; 
+				end for; 
+			end if; 
+		end for;  
+	end for;
+	for a1 in [-maxheight .. maxheight] do
+    		for a2 in [1 .. maxheight] do
+			if Gcd(a1,a2) eq 1 then
+				for a3 in [-maxheight .. maxheight] do
+					for a4 in [1 .. maxheight] do
+						if Gcd(a3,a4) eq 1 then
+							M := Maximum({AbsoluteValue(a1),AbsoluteValue(a2),AbsoluteValue(a3),AbsoluteValue(a4)}); 
+							Done := Done +1; 
+							print Done, "/", Count; 
+							if a3 eq 0 then 
+								for A in [M .. maxheight] do 
+								BaseChange[A] := BaseChange[A] + 1; 
+								end for; 
+							end if; 
+							if a3 ne 0 then 
+							u:=a1/a2+a3/a4*i; 
+								for B in [M .. maxheight] do 
+								TotalNumber[B]:= TotalNumber[B] +1;
+								end for; 
+							term1 := -27*u*(u^3+8);
+							term2 := 54*(u^6-20*u^3-8);
+								if 4*term1^3+27*term2^2 ne 0 then
+									for C in [M .. maxheight] do 
+									ECNumber[C] := ECNumber[C]+1; 
+									end for; 
+								p := Q! y^3+term1*y+term2;
+								F := SplittingField(p);
+								H := AbsoluteField(F);
+									if Degree(H) eq 12 then		
+									G := GaloisGroup(H);	
+									N := NormalSubgroups(G:OrderEqual := 2);	
+									try 
+										pp:=N[1];
+										for D in [M .. maxheight] do
+										CoolNumber[D] := CoolNumber[D] + 1;
+										end for; 
+									catch e
+										pp:=0;
+									end try;
+									end if; 	
+								end if;
+							end if;
+						end if; 
+					end for;
+				end for;
+			end if; 
+		end for;
+	end for;
+for E in [1 .. maxheight] do 
+	print E, "/", TotalNumber[E], " / ",  CoolNumber[E], " / ", ECNumber[E], " / ", BaseChange[E];
+end for; 
