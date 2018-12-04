@@ -1,0 +1,92 @@
+maxheight:=40;
+P<x> := PolynomialRing(Integers());
+f := P! x^2+1;
+A<i> := NumberField(f);
+Q<y> := PolynomialRing(A);
+qq := 0;
+Count := 0;
+Done := 0; 
+TotalNumber := AssociativeArray();
+CoolNumber := AssociativeArray();
+ECNumber := AssociativeArray();
+for height in [1 .. maxheight] do
+	TotalNumber[height] := 0;
+	CoolNumber[height] := 0;
+	ECNumber[height]:= 0; 
+end for; 
+	for a1 in [-maxheight .. maxheight] do
+    		for a2 in [1 .. maxheight] do
+			if Gcd(a1,a2) eq 1 then
+				for a3 in [-maxheight .. maxheight] do
+					for a4 in [1 .. maxheight] do
+						if Gcd(a3,a4) eq 1 then
+							Count:= Count +1; 
+							M := Maximum({AbsoluteValue(a1),AbsoluteValue(a2),AbsoluteValue(a3),AbsoluteValue(a4)}); 
+							u:=a1/a2+a3/a4*i; 
+							for B in [M .. maxheight] do 
+							TotalNumber[B]:= TotalNumber[B]+1;
+							end for; 
+							term1 := -2187/529*u^4 - 5832/529*u^3 - 162/23*u^2 + 1;
+							term2 := -177147/279841*i*u^6 + 65610/12167*i*u^5 + 10935/529*i*u^4 + 14580/529*i*u^3 + 405/23*i*u^2 + 6*i*u + i;
+							if 4*term1^3+27*term2^2 ne 0 then
+								for C in [M .. maxheight] do 
+								ECNumber[C] := ECNumber[C]+1; 
+								end for;
+							end if;
+						end if; 
+					end for; 
+				end for; 
+			end if; 
+		end for;  
+	end for;
+	for a1 in [-maxheight .. maxheight] do
+    		for a2 in [1 .. maxheight] do
+			if Gcd(a1,a2) eq 1 then
+				for a3 in [0 .. maxheight] do
+					for a4 in [1 .. maxheight] do
+						if Gcd(a3,a4) eq 1 then
+							if a3 ne 0 then 
+								Done := Done +2;
+							end if; 
+							if a3 eq 0 then
+								Done := Done +1;
+							end if; 
+							print Done, "/", Count;
+							M := Maximum({AbsoluteValue(a1),AbsoluteValue(a2),AbsoluteValue(a3),AbsoluteValue(a4)}); 
+							if a3 ne 0 then 
+								u:=a1/a2+a3/a4*i;  
+								term1 := -2187/529*u^4 - 5832/529*u^3 - 162/23*u^2 + 1;
+								term2 := -177147/279841*i*u^6 + 65610/12167*i*u^5 + 10935/529*i*u^4 + 14580/529*i*u^3 + 405/23*i*u^2 + 6*i*u + i;
+								if 4*term1^3+27*term2^2 ne 0 then
+									p := Q! y^3+term1*y+term2;
+									F := SplittingField(p);
+									H := AbsoluteField(F);
+									if Degree(H) eq 12 then	
+											G := GaloisGroup(H);	
+											N := NormalSubgroups(G:OrderEqual := 2);	
+											if #N ne 0 then
+												print term1, term2;
+												PrintFile("newaccidents.txt", p);
+												for D in [M .. maxheight] do
+												if a3 eq 0 then 
+													CoolNumber[D] := CoolNumber[D] + 1;
+												end if; 
+												if a3 ne 0 then 
+													CoolNumber[D] := CoolNumber[D] + 2;
+												end if;
+												end for; 
+											end if; 
+									end if;
+								end if; 	
+							end if;							
+						end if; 
+					end for;
+				end for;
+			end if; 
+		end for;
+	end for;
+for E in [1 .. maxheight] do 
+	print E, "/", TotalNumber[E], " / ",  CoolNumber[E], " / ", ECNumber[E];
+	data:= [E, TotalNumber[E], CoolNumber[E], ECNumber[E]]
+	PrintFile("newstats.txt", data);
+end for; 
