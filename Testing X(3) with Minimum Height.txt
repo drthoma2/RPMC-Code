@@ -22,7 +22,7 @@ end for;
 			if Gcd(a1,a2) eq 1 then
 				for a3 in [-maxheight .. maxheight] do
 					for a4 in [1 .. maxheight] do
-						if Maximum({AbsoluteValue(a1),AbsoluteValue(a2),AbsoluteValue(a3),AbsoluteValue(a4)})) gt minheight-1 then
+						if Maximum({AbsoluteValue(a1),AbsoluteValue(a2),AbsoluteValue(a3),AbsoluteValue(a4)}) gt minheight-1 then
 							if Gcd(a3,a4) eq 1 then
 								Count:= Count +1; 
 								M := Maximum({AbsoluteValue(a1),AbsoluteValue(a2),AbsoluteValue(a3),AbsoluteValue(a4)}); 
